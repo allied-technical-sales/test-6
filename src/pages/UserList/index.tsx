@@ -82,7 +82,7 @@ const UserList: React.FC<IUserListProps> = props => {
                 <Grid item={true}>
                   <Button
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     onClick={() => {
                       deleteUser(
                         UserFactory({ id: userId, name: user.get("name") })
@@ -108,7 +108,7 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return {
-    ...bindActionCreators({ addUser }, dispatch)
+    ...bindActionCreators({ addUser, deleteUser }, dispatch)
   };
 };
 
