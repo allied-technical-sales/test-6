@@ -1,37 +1,24 @@
-import React, { useState } from 'react';
-import {
-  compose,
-  bindActionCreators,
-  AnyAction,
-  Dispatch,
-} from 'redux';
-import { IMatch } from '../../Interfaces';
-import {
-  getIn,
-  Record,
-  List,
-} from 'immutable';
-import { connect } from 'react-redux';
-import {
-  Grid,
-  Typography,
-  Button,
-  TextField,
-} from '@material-ui/core';
+import React, { useState } from "react";
+import { compose, bindActionCreators, AnyAction, Dispatch } from "redux";
+import { IMatch } from "../../Interfaces";
+import { getIn, Record, List } from "immutable";
+import { connect } from "react-redux";
+import { Grid, Typography, Button, TextField } from "@material-ui/core";
 import {
   AddTodoAction,
+  CompleteTodoAction,
   ITodo,
   TodoFactory,
-  IUser,
-} from '../../actions/default';
+  IUser
+} from "../../actions/default";
 import {
   makeSelectTodosForUser,
-  makeSelectUser,
-} from '../../selectors/default';
-import { createStructuredSelector } from 'reselect';
+  makeSelectUser
+} from "../../selectors/default";
+import { createStructuredSelector } from "reselect";
 
 interface ITodoComponentProps {
-  match: IMatch,
+  match: IMatch;
 }
 
 interface ITodoProps extends ITodoComponentProps {
@@ -39,133 +26,113 @@ interface ITodoProps extends ITodoComponentProps {
   userId: number;
   todosForUser: List<Record<ITodo>>;
   user?: Record<IUser>;
+  completeTodo: (userId: number, todo: Record<ITodo>) => void;
 }
 
+const addTodo = (userId: number, todo: Record<ITodo>) =>
+  new AddTodoAction({ userId, todo });
 
-const addTodo = (userId: number, todo: Record<ITodo>) => new AddTodoAction({ userId, todo });
+const completeTodo = (userId: number, todo: Record<ITodo>) =>
+  new CompleteTodoAction({ userId, todo });
 
-const Todo: React.FC<ITodoProps> = (props) => {
-  const [textInput, setTextInput] = useState('');
+const Todo: React.FC<ITodoProps> = props => {
+  const [textInput, setTextInput] = useState("");
 
-  const {
-    addTodo,
-    userId,
-    todosForUser,
-    user,
-  } = props;
+  const { addTodo, userId, todosForUser, user, completeTodo } = props;
   if (user == null) {
     return (
-      <Grid
-        container={true}
-        direction='column'
-        wrap='nowrap'
-      >
-        <Grid
-          item={true}
-        >
-          <Typography
-            variant='h5'
-          >
-            INVALID USER
-          </Typography>
+      <Grid container={true} direction="column" wrap="nowrap">
+        <Grid item={true}>
+          <Typography variant="h5">INVALID USER</Typography>
         </Grid>
       </Grid>
     );
   }
   return (
-    <Grid
-      container={true}
-      direction='column'
-      wrap='nowrap'
-    >
-      <Grid
-        item={true}
-      >
-        <Typography
-          variant='h5'
-        >
-          TODOS FOR {user.get('name')}
-        </Typography>
+    <Grid container={true} direction="column" wrap="nowrap">
+      <Grid item={true}>
+        <Typography variant="h5">TODOS FOR {user.get("name")}</Typography>
       </Grid>
-      <Grid
-        container={true}
-        item={true}
-        direction='column'
-        wrap='nowrap'
-      >
-        <Grid
-          item={true}
-          container={true}
-          alignItems='center'
-        >
-          <Grid
-            item={true}
-          >
+      <Grid container={true} item={true} direction="column" wrap="nowrap">
+        <Grid item={true} container={true} alignItems="center">
+          <Grid item={true}>
             <TextField
-              label='title'
+              label="title"
               value={textInput}
-              onChange={(e) => {
+              onChange={e => {
                 setTextInput(e.target.value);
               }}
             />
           </Grid>
-          <Grid
-            item={true}
-          >
+          <Grid item={true}>
             <Button
-              variant='outlined'
-              onClick={
-                () => {
-                  addTodo(
-                    userId,
-                    TodoFactory({
-                      title: textInput,
-                    }),
-                  );
-                  setTextInput('');
-                }
-              }
+              variant="outlined"
+              onClick={() => {
+                addTodo(
+                  userId,
+                  TodoFactory({
+                    title: textInput
+                  })
+                );
+                setTextInput("");
+              }}
             >
               Add Todo
             </Button>
           </Grid>
         </Grid>
-        {
-          todosForUser.map((todo, index) => {
-            return <Grid
-              key={index}
-              item={true}
-            >
-              {todo.get('title')}
-            </Grid>;
-          })
-        }
+        {todosForUser.map((todo, index) => {
+          return (
+            <Grid key={index} item={true}>
+              <div className={`todo-title-${todo.get("completed")}`}>
+                {todo.get("title")}{" "}
+              </div>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  completeTodo(
+                    userId,
+                    TodoFactory({
+                      id: todo.get("id"),
+                      userId,
+                      title: todo.get("title")
+                    })
+                  );
+                }}
+                className={`button-completed-${todo.get("completed")}`}
+              >
+                <Typography>&#9989;</Typography>
+              </Button>
+            </Grid>
+          );
+        })}
       </Grid>
     </Grid>
   );
-}
+};
 
 const mapStateToProps = (state: any, props: ITodoComponentProps) => {
-  const {
-    match,
-  } = props;
-  const userId = parseInt(getIn(match, ['params', 'userId'], -1), 10); // from path / router
+  const { match } = props;
+  const userId = parseInt(getIn(match, ["params", "userId"], -1), 10); // from path / router
   return {
     userId,
     ...createStructuredSelector({
       todosForUser: makeSelectTodosForUser(userId),
-      user: makeSelectUser(userId),
+      user: makeSelectUser(userId)
     })(state)
-  }
+  };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return {
-    ...bindActionCreators({ addTodo }, dispatch)
+    ...bindActionCreators({ addTodo, completeTodo }, dispatch)
   };
 };
 
-
 export default compose<React.ComponentClass<ITodoComponentProps>>(
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )(Todo);

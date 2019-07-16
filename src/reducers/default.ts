@@ -9,7 +9,8 @@ import {
   AddUserAction,
   UserFactory,
   TodoFactory,
-  DeleteUserAction
+  DeleteUserAction,
+  CompleteTodoAction
 } from "../actions/default";
 
 // import {
@@ -114,6 +115,21 @@ export const reducer = (
           todo.withMutations(mutableTodo => {
             mutableTodo.set("id", todoId);
             mutableTodo.set("userId", userId);
+          })
+        );
+      });
+    }
+    case DefaultActionTypes.COMPLETE_TODO: {
+      const { payload } = action as CompleteTodoAction;
+      const { todo } = payload;
+
+      return state.withMutations(mutableState => {
+        mutableState.setIn(
+          ["todos", "id"],
+          todo.withMutations(mutableTodo => {
+            if (mutableTodo.get("completed") === false) {
+              mutableTodo.set("completed", true);
+            }
           })
         );
       });
