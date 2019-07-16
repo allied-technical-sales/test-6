@@ -7,6 +7,7 @@ import { Grid, Typography, Button, TextField } from "@material-ui/core";
 import {
   AddTodoAction,
   CompleteTodoAction,
+  DeleteTodoAction,
   ITodo,
   TodoFactory,
   IUser
@@ -27,6 +28,7 @@ interface ITodoProps extends ITodoComponentProps {
   todosForUser: List<Record<ITodo>>;
   user?: Record<IUser>;
   completeTodo: (userId: number, todo: Record<ITodo>) => void;
+  deleteTodo: (userId: number, todo: Record<ITodo>) => void;
 }
 
 const addTodo = (userId: number, todo: Record<ITodo>) =>
@@ -34,6 +36,9 @@ const addTodo = (userId: number, todo: Record<ITodo>) =>
 
 const completeTodo = (userId: number, todo: Record<ITodo>) =>
   new CompleteTodoAction({ userId, todo });
+
+const deleteTodo = (userId: number, todo: Record<ITodo>) =>
+  new DeleteTodoAction({ userId, todo });
 
 const Todo: React.FC<ITodoProps> = props => {
   const [textInput, setTextInput] = useState("");
@@ -104,6 +109,22 @@ const Todo: React.FC<ITodoProps> = props => {
               >
                 <Typography>&#9989;</Typography>
               </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  deleteTodo(
+                    userId,
+                    TodoFactory({
+                      id: todo.get("id"),
+                      userId: userId,
+                      title: textInput
+                    })
+                  );
+                }}
+              >
+                <Typography>&times;</Typography>
+              </Button>
             </Grid>
           );
         })}
@@ -126,7 +147,7 @@ const mapStateToProps = (state: any, props: ITodoComponentProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return {
-    ...bindActionCreators({ addTodo, completeTodo }, dispatch)
+    ...bindActionCreators({ addTodo, completeTodo, deleteTodo }, dispatch)
   };
 };
 
