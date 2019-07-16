@@ -25,12 +25,14 @@ export interface ITodo {
   id: number;
   userId: number;
   title: string;
+  completed: boolean;
 }
 
 export const TodoFactory = Record<ITodo>({
   id: -1,
   userId: -1,
-  title: "untitled"
+  title: "untitled",
+  completed: false
 });
 
 export class AddUserAction implements IAction {

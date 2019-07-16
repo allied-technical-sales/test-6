@@ -46,7 +46,8 @@ const initialTodos = [
   TodoFactory({
     id: 1,
     userId: 1,
-    title: "Drink Water"
+    title: "Drink Water",
+    completed: false
   })
 ];
 const INITIAL_STATE = fromJS({

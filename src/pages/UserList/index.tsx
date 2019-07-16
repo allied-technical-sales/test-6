@@ -89,7 +89,7 @@ const UserList: React.FC<IUserListProps> = props => {
                       );
                     }}
                   >
-                    <Typography>Remove User</Typography>
+                    <Typography>&times;</Typography>
                   </Button>
                 </Grid>
               </Grid>
