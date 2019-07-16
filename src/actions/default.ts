@@ -8,7 +8,8 @@ export enum DefaultActionTypes {
   ADD_TODO = "ADD_TODO",
   ADD_CAT_FACT = "ADD_CAT_FACT",
   DELETE_USER = "DELETE_USER",
-  DELETE_TODO = "DELETE_TODO"
+  DELETE_TODO = "DELETE_TODO",
+  COMPLETE_TODO = "COMPLETE_TODO"
 }
 
 export interface IUser {
@@ -75,6 +76,16 @@ export class DeleteUserAction implements IAction {
 
 export class DeleteTodoAction implements IAction {
   public readonly type = DefaultActionTypes.DELETE_TODO;
+  constructor(
+    public payload: {
+      userId: number;
+      todo: Record<ITodo>;
+    }
+  ) {}
+}
+
+export class CompleteTodoAction implements IAction {
+  public readonly type = DefaultActionTypes.COMPLETE_TODO;
   constructor(
     public payload: {
       userId: number;
