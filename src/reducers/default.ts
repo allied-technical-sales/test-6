@@ -121,15 +121,18 @@ export const reducer = (
       });
     }
     case DefaultActionTypes.COMPLETE_TODO: {
+      const lastTodoId = state.get("lastTodoId");
       const { payload } = action as CompleteTodoAction;
       const { todo } = payload;
-
+      const id = lastTodoId;
       return state.withMutations(mutableState => {
         mutableState.setIn(
-          ["todos", "id"],
+          ["todos", id],
           todo.withMutations(mutableTodo => {
             if (mutableTodo.get("completed") === false) {
               mutableTodo.set("completed", true);
+            } else {
+              mutableTodo.set("completed", false);
             }
           })
         );
