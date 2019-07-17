@@ -96,42 +96,48 @@ const Todo: React.FC<ITodoProps> = props => {
         {todosForUser.map((todo, index) => {
           return (
             <Grid key={index} item={true}>
-              <div className={`todo-title-${todo.get("completed")}`}>
-                {todo.get("title")}{" "}
+              <div className="todo-item">
+                <div
+                  className={`todo-title todo-title-${todo.get("completed")}`}
+                >
+                  {todo.get("title")}{" "}
+                </div>
+                <div className="todo-buttons">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      completeTodo(
+                        userId,
+                        TodoFactory({
+                          id: todo.get("id"),
+                          userId,
+                          title: todo.get("title")
+                        })
+                      );
+                    }}
+                    className={`button-completed-${todo.get("completed")}`}
+                  >
+                    <Typography>&#9989;</Typography>
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => {
+                      deleteTodo(
+                        userId,
+                        TodoFactory({
+                          id: todo.get("id"),
+                          userId: userId,
+                          title: textInput
+                        })
+                      );
+                    }}
+                  >
+                    <Typography>&times;</Typography>
+                  </Button>
+                </div>
               </div>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  completeTodo(
-                    userId,
-                    TodoFactory({
-                      id: todo.get("id"),
-                      userId,
-                      title: todo.get("title")
-                    })
-                  );
-                }}
-                className={`button-completed-${todo.get("completed")}`}
-              >
-                <Typography>&#9989;</Typography>
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => {
-                  deleteTodo(
-                    userId,
-                    TodoFactory({
-                      id: todo.get("id"),
-                      userId: userId,
-                      title: textInput
-                    })
-                  );
-                }}
-              >
-                <Typography>&times;</Typography>
-              </Button>
             </Grid>
           );
         })}

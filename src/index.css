@@ -19,3 +19,11 @@ code {
 .button-completed-true {
   display: none !important;
 }
+
+.todo-item {
+  width: 680px;
+  margin: 20px auto 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+}
