@@ -43,7 +43,14 @@ const deleteTodo = (userId: number, todo: Record<ITodo>) =>
 const Todo: React.FC<ITodoProps> = props => {
   const [textInput, setTextInput] = useState("");
 
-  const { addTodo, userId, todosForUser, user, completeTodo } = props;
+  const {
+    addTodo,
+    userId,
+    todosForUser,
+    user,
+    completeTodo,
+    deleteTodo
+  } = props;
   if (user == null) {
     return (
       <Grid container={true} direction="column" wrap="nowrap">
@@ -110,7 +117,7 @@ const Todo: React.FC<ITodoProps> = props => {
                 <Typography>&#9989;</Typography>
               </Button>
               <Button
-                variant="contained"
+                variant="outlined"
                 color="secondary"
                 onClick={() => {
                   deleteTodo(

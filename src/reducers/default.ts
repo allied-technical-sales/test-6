@@ -139,12 +139,9 @@ export const reducer = (
       });
     }
     case DefaultActionTypes.DELETE_TODO: {
-      const lastTodoId = state.get("lastTodoId");
       const { payload } = action as DeleteTodoAction;
       const { todo } = payload;
-      const todoId = lastTodoId - 1;
       return state.withMutations(mutableState => {
-        mutableState.set("lastTodoId", todoId);
         mutableState.set(
           "todos",
           mutableState.get("todos").filter(i => i.get("id") !== todo.get("id"))
